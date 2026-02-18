@@ -12,33 +12,29 @@ interface MarkdownRendererProps {
 
 export function MarkdownRenderer({ content }: MarkdownRendererProps) {
     return (
-        <div className="prose dark:prose-invert prose-base max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:leading-relaxed prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-code:text-pink-600 dark:prose-code:text-pink-400 prose-pre:bg-gray-900 prose-pre:border prose-pre:border-gray-800 prose-th:px-4 prose-th:py-2 prose-td:px-4 prose-td:py-2">
+        <div className="prose dark:prose-invert prose-base max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:leading-relaxed prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-code:text-pink-600 dark:prose-code:text-pink-400 prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none prose-pre:bg-gray-900 prose-pre:border prose-pre:border-gray-800 prose-th:px-4 prose-th:py-2 prose-td:px-4 prose-td:py-2">
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeHighlight]}
                 components={{
-                    code({ node, inline, className, children, ...props }: any) {
+                    pre({ children }: any) {
+                        const codeElement = React.Children.toArray(children)[0];
+                        const className = React.isValidElement<{ className?: string }>(codeElement)
+                            ? codeElement.props.className
+                            : "";
                         const match = /language-(\w+)/.exec(className || "");
-                        return !inline ? (
+                        
+                        return (
                             <div className="relative my-6 rounded-lg overflow-hidden bg-gray-950 border border-gray-800 shadow-md">
                                 <div className="flex items-center justify-between px-4 py-2 bg-gray-900 border-b border-gray-800 text-xs text-gray-400 font-mono">
                                     <span>{match?.[1] || "code"}</span>
                                 </div>
                                 <div className="overflow-x-auto">
                                     <pre className="!m-0 !p-4 !bg-transparent overflow-x-auto text-sm">
-                                        <code className={className} {...props}>
-                                            {children}
-                                        </code>
+                                        {children}
                                     </pre>
                                 </div>
                             </div>
-                        ) : (
-                            <code
-                                className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-1.5 py-0.5 rounded text-sm font-mono text-pink-600 dark:text-pink-400"
-                                {...props}
-                            >
-                                {children}
-                            </code>
                         );
                     },
                     // Table components override for better styling control if needed,

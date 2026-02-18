@@ -22,11 +22,7 @@ export default function Home() {
     useEffect(() => {
         // If no session, create one
         const initSession = async () => {
-            // Check URL params or localstorage if wanted, but for now just create new if null
-            // Actually better UX: Don't create on load, wait for user?
-            // Or create one immediately so they can chat.
-            // Let's create one.
-            try {
+             try {
                 // Check if we have a last session ID in local storage?
                 const lastId = localStorage.getItem("lastSessionId");
                 if (lastId) {
@@ -34,12 +30,13 @@ export default function Home() {
                 } else {
                     await handleNewChat();
                 }
-            } catch (e) {
-                console.error("Failed init", e);
+            } catch (err) {
+                console.error("Failed init", err);
                 await handleNewChat();
             }
         };
         initSession();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const loadSession = async (id: string) => {
@@ -215,7 +212,6 @@ export default function Home() {
                 <ChatWindow
                     messages={messages}
                     isLoading={isLoading}
-                    onScrollToBottom={() => {}}
                 />
 
                 {/* Input */}

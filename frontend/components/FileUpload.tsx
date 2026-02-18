@@ -198,6 +198,7 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
                                 </span>
                             </div>
                             <button
+                                type="button"
                                 onClick={() => removeFile(i)}
                                 className="text-gray-400 hover:text-red-500"
                             >
@@ -207,6 +208,7 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
                     ))}
 
                     <button
+                        type="button"
                         onClick={handleUpload}
                         disabled={isUploading}
                         className="w-full mt-2 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded font-medium text-xs flex items-center justify-center gap-2 disabled:opacity-50"
@@ -222,6 +224,7 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
 
             {serverFiles.length > 0 && !files.length && (
                 <button
+                    type="button"
                     onClick={handleClearSession}
                     disabled={isUploading}
                     className="w-full mt-4 py-2 border border-gray-200 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/10 text-red-500 rounded text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"

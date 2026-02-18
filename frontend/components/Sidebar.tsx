@@ -29,13 +29,14 @@ export function Sidebar({
         try {
             const data = await getSessions();
             setSessions(data.sessions || []);
-        } catch (e) {
-            console.error("Failed to load sessions", e);
+        } catch (err) {
+            console.error("Failed to load sessions", err);
         }
     };
 
     useEffect(() => {
         loadSessions();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [needsRefresh, currentSessionId]); // Also reload when session changes to update titles if needed
 
     const handleDeleteSession = async (e: React.MouseEvent, id: string) => {
@@ -47,8 +48,8 @@ export function Sidebar({
             if (id === currentSessionId) {
                 onNewChat();
             }
-        } catch (e) {
-            console.error(e);
+        } catch (err) {
+            console.error(err);
         }
     };
 

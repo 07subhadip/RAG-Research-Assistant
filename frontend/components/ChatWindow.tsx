@@ -7,13 +7,11 @@ import { Message } from "../types/chat";
 interface ChatWindowProps {
     messages: Message[];
     isLoading: boolean;
-    onScrollToBottom: () => void;
 }
 
 export function ChatWindow({
     messages,
     isLoading,
-    onScrollToBottom,
 }: ChatWindowProps) {
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
