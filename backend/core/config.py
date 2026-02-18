@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 class Settings(BaseSettings):
     HUGGINGFACEHUB_ACCESS_TOKEN: str
     ALLOWED_ORIGINS: list = ["http://localhost:3000", "http://localhost:8000"]
@@ -9,5 +10,6 @@ class Settings(BaseSettings):
     RAG_VECTORSTORE_PATH: str = "vectorstore"
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
 
 settings = Settings()

@@ -7,10 +7,7 @@ console = Console()
 if __name__ == "__main__":
     print("Testing Full Pipeline till Vector Store...\n")
 
-    rag = RAGPipeline(
-        data_path = "data/raw",
-        vectorstore_path = "vectorstore"
-    )
+    rag = RAGPipeline(data_path="data/raw", vectorstore_path="vectorstore")
 
     rag.load_documents()
 
@@ -32,11 +29,11 @@ if __name__ == "__main__":
     while True:
         query = input("Ask: ")
 
-        if query.lower() == 'exit':
+        if query.lower() == "exit":
             break
 
         answer = rag.rag_chain.invoke(query)
 
-        print('\nAnswer:\n')
-        console.print(Markdown(answer)) 
+        print("\nAnswer:\n")
+        console.print(Markdown(answer))
         print("-" * 50)

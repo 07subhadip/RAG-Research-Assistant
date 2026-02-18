@@ -1,12 +1,12 @@
 export interface Message {
-  role: 'user' | 'assistant';
-  content: string;
+    role: "user" | "assistant";
+    content: string;
 }
 
 export interface UploadStatus {
-  status: 'idle' | 'success' | 'error';
-  message?: string;
-  files?: string[];
+    status: "idle" | "success" | "error";
+    message?: string;
+    files?: string[];
 }
 
 export interface ChatSession {
