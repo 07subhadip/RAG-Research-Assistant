@@ -1,5 +1,40 @@
-venv/
-.env
+# Python
 __pycache__/
-vectorstore/
-*.pyc
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.env
+.env.*
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Next.js
+.next/
+out/
+build/
+.vercel/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Application Data (Do not commit user data)
+data/raw/*
+!data/raw/.gitkeep
+backend/data/chats/*
+!backend/data/chats/.gitkeep
+vectorstore/*
+!vectorstore/.gitkeep
+
+# Logs
+logs/
+*.log
