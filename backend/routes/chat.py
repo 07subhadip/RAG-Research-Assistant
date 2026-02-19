@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse, JSONResponse
 from pydantic import BaseModel
-from backend.services.rag_service import rag_service
-from backend.services.chat_storage import chat_storage
+from services.rag_service import rag_service
+from services.chat_storage import chat_storage
 
 import json
 import asyncio

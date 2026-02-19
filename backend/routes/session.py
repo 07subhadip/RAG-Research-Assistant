@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
-from backend.services.chat_storage import chat_storage
+from services.chat_storage import chat_storage
 
 router = APIRouter()
 

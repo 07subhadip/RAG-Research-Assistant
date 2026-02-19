@@ -3,7 +3,7 @@ import json
 import uuid
 from datetime import datetime
 from typing import List, Dict, Optional
-from backend.core.config import settings
+from core.config import settings
 
 CHATS_DIR = "data/chats"
 os.makedirs(CHATS_DIR, exist_ok=True)

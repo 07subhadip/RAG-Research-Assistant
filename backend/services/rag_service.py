@@ -4,7 +4,7 @@ import asyncio
 from typing import List, Generator, AsyncGenerator
 from fastapi import UploadFile, HTTPException
 from app.rag_pipeline import RAGPipeline
-from backend.core.config import settings
+from core.config import settings
 
 
 class RAGService:

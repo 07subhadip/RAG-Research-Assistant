@@ -2,8 +2,8 @@ from fastapi import APIRouter, File, UploadFile, HTTPException
 from typing import List
 import os
 import shutil
-from backend.services.rag_service import rag_service
-from backend.core.config import settings
+from services.rag_service import rag_service
+from core.config import settings
 
 router = APIRouter()
 
