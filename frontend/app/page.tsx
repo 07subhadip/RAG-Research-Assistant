@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { ChatWindow } from "@/components/ChatWindow";
 import { ChatInput } from "@/components/ChatInput";
-import { GripHorizontal, Github } from "lucide-react";
+import { GripHorizontal, Github, AlertTriangle } from "lucide-react";
 import { Message } from "@/types/chat";
 import { createSession, getSession } from "@/lib/api";
 
@@ -17,22 +17,43 @@ export default function Home() {
         null,
     );
     const [sidebarRefreshTrigger, setSidebarRefreshTrigger] = useState(false);
+    const [isStorageCritical, setIsStorageCritical] = useState(false);
+
+    // Check storage quota
+    useEffect(() => {
+        if (navigator.storage && navigator.storage.estimate) {
+            navigator.storage.estimate().then(({ usage, quota }) => {
+                if (usage !== undefined && quota !== undefined) {
+                    const remaining = quota - usage;
+                    // Warn if less than 50MB (extreme case)
+                    if (remaining < 50 * 1024 * 1024) {
+                        console.warn(
+                            "Storage critical:",
+                            remaining / 1024 / 1024,
+                            "MB remaining",
+                        );
+                        setIsStorageCritical(true);
+                    }
+                }
+            });
+        }
+    }, []);
 
     // Initial load
     useEffect(() => {
         // If no session, create one
         const initSession = async () => {
-             try {
+            try {
                 // Check if we have a last session ID in local storage?
                 const lastId = localStorage.getItem("lastSessionId");
                 if (lastId) {
                     await loadSession(lastId);
                 } else {
-                    await handleNewChat();
+                    handleNewChat();
                 }
             } catch (err) {
                 console.error("Failed init", err);
-                await handleNewChat();
+                handleNewChat();
             }
         };
         initSession();
@@ -55,36 +76,52 @@ export default function Home() {
         }
     };
 
-    const handleNewChat = async () => {
-        try {
-            const session = await createSession();
-            setCurrentSessionId(session.id);
-            setMessages([]);
-            localStorage.setItem("lastSessionId", session.id);
-            setSidebarRefreshTrigger((prev) => !prev);
-        } catch (e) {
-            console.error("Failed create", e);
-        }
+    const handleNewChat = () => {
+        setCurrentSessionId(null);
+        setMessages([]);
+        localStorage.removeItem("lastSessionId");
+        setSidebarRefreshTrigger((prev) => !prev);
     };
 
     const handleSend = async (query: string) => {
-        if (!currentSessionId) return;
+        let activeSessionId = currentSessionId;
 
+        // Block new chats if storage critical
+        if (!activeSessionId && isStorageCritical) {
+            setMessages((prev) => [
+                ...prev,
+                { role: "user", content: query },
+                {
+                    role: "assistant",
+                    content:
+                        "⚠️ **CRITICAL WARNING**: Cannot create a new chat session because your browser storage is full. Please delete old chats or clear browser data to continue.",
+                },
+            ]);
+            return;
+        }
+
+        // Optimistically add user message AND empty assistant message (for thinking state)
         const userMsg: Message = { role: "user", content: query };
         const assistantMsgPlaceholder: Message = {
             role: "assistant",
             content: "",
         };
-
-        // Optimistically add user message AND empty assistant message (for thinking state)
         setMessages((prev) => [...prev, userMsg, assistantMsgPlaceholder]);
         setIsLoading(true);
 
         try {
+            if (!activeSessionId) {
+                const session = await createSession(query.slice(0, 30));
+                activeSessionId = session.id;
+                setCurrentSessionId(session.id);
+                localStorage.setItem("lastSessionId", session.id);
+                setSidebarRefreshTrigger((prev) => !prev);
+            }
+
             const response = await fetch("http://localhost:8000/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ query, session_id: currentSessionId }),
+                body: JSON.stringify({ query, session_id: activeSessionId }),
             });
 
             if (!response.body) throw new Error("No response body");
@@ -163,16 +200,14 @@ export default function Home() {
 
     return (
         <div className="flex h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 overflow-hidden font-sans">
-            {isSidebarOpen && (
-                <Sidebar
-                    isOpen={isSidebarOpen}
-                    onNewChat={handleNewChat}
-                    onUploadSuccess={() => {}}
-                    onSelectSession={loadSession}
-                    currentSessionId={currentSessionId}
-                    needsRefresh={sidebarRefreshTrigger}
-                />
-            )}
+            <Sidebar
+                isOpen={isSidebarOpen}
+                onNewChat={handleNewChat}
+                onUploadSuccess={() => {}}
+                onSelectSession={loadSession}
+                currentSessionId={currentSessionId}
+                needsRefresh={sidebarRefreshTrigger}
+            />
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col h-full relative border-l border-gray-200 dark:border-gray-800">
@@ -207,6 +242,14 @@ export default function Home() {
                         <Github size={20} />
                     </a>
                 </header>
+
+                {isStorageCritical && (
+                    <div className="bg-red-500 text-white text-xs p-2 text-center font-bold flex items-center justify-center gap-2 animate-in slide-in-from-top-full duration-300">
+                        <AlertTriangle size={14} className="animate-pulse" />
+                        CRITICAL STORAGE WARNING: Your browser is running out of
+                        space. Please delete old chats to continue safely.
+                    </div>
+                )}
 
                 {/* Chat Window */}
                 <ChatWindow

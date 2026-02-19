@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import React, { useEffect, useState, useRef } from "react";
 import { FileUpload } from "./FileUpload";
 import { Plus, MessageSquare, Trash2 } from "lucide-react";
 import { ChatSession } from "@/types/chat";
@@ -24,6 +26,23 @@ export function Sidebar({
     needsRefresh,
 }: SidebarProps) {
     const [sessions, setSessions] = useState<ChatSession[]>([]);
+    const sidebarRef = useRef<HTMLDivElement>(null);
+
+    useGSAP(() => {
+        if (isOpen) {
+            gsap.to(sidebarRef.current, {
+                width: "20rem",
+                duration: 0.8,
+                ease: "power2.inOut",
+            });
+        } else {
+            gsap.to(sidebarRef.current, {
+                width: 0,
+                duration: 0.8,
+                ease: "power2.inOut",
+            });
+        }
+    }, [isOpen]);
 
     const loadSessions = async () => {
         try {
@@ -55,9 +74,10 @@ export function Sidebar({
 
     return (
         <div
-            className={`${isOpen ? "w-80" : "w-0"} bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden flex flex-col h-full`}
+            ref={sidebarRef}
+            className="w-0 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex-shrink-0 overflow-hidden flex flex-col h-full"
         >
-            <div className="w-80 flex flex-col h-full">
+            <div className="w-80 min-w-80 flex flex-col h-full">
                 <div className="p-4 flex-1 overflow-y-auto">
                     <button
                         onClick={onNewChat}
@@ -119,13 +139,21 @@ export function Sidebar({
 
                 <div className="p-4 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
                     <div className="flex items-center gap-3 px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg cursor-pointer transition-colors">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 shadow-sm" />
+                        <div className="relative">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 shadow-sm" />
+                            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500 text-[8px] items-center justify-center text-white font-bold">
+                                    β
+                                </span>
+                            </span>
+                        </div>
                         <div className="flex flex-col">
                             <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
                                 User
                             </span>
                             <span className="text-xs text-gray-500">
-                                Pro Plan
+                                Demo User
                             </span>
                         </div>
                     </div>

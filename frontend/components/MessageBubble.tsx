@@ -3,7 +3,7 @@
 import React from "react";
 
 import { MarkdownRenderer } from "./MarkdownRenderer";
-import { User, Sparkles } from "lucide-react";
+import { User, Sparkles, ThumbsUp, ThumbsDown, Copy } from "lucide-react";
 
 interface Message {
     role: "user" | "assistant";
@@ -58,6 +58,35 @@ export function MessageBubble({ message }: { message: Message }) {
                             <MarkdownRenderer content={message.content} />
                         )}
                     </div>
+
+                    {/* Action Buttons Footer for Assistant */}
+                    {!isUser && message.content && (
+                        <div className="flex items-center gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <button
+                                className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-all"
+                                title="Good response"
+                            >
+                                <ThumbsUp size={14} />
+                            </button>
+                            <button
+                                className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-all"
+                                title="Bad response"
+                            >
+                                <ThumbsDown size={14} />
+                            </button>
+                            <button
+                                onClick={() =>
+                                    navigator.clipboard.writeText(
+                                        message.content,
+                                    )
+                                }
+                                className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-all ml-1"
+                                title="Copy to clipboard"
+                            >
+                                <Copy size={14} />
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

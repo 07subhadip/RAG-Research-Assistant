@@ -3,7 +3,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     HUGGINGFACEHUB_ACCESS_TOKEN: str
-    ALLOWED_ORIGINS: list = ["http://localhost:3000", "http://localhost:8000"]
+    ALLOWED_ORIGINS: list = [
+        "http://localhost:3000",
+        "http://localhost:8000",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:8000",
+    ]
     MAX_FILE_SIZE: int = 20 * 1024 * 1024  # 20MB
     MAX_FILES: int = 5
     RAG_DATA_PATH: str = "data/raw"
