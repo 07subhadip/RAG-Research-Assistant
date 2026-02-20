@@ -20,6 +20,7 @@ class Settings(BaseSettings):
         "http://localhost:8000",
         "http://127.0.0.1:3000",
         "http://127.0.0.1:8000",
+        "https://rag-research-assistant.vercel.app",
     ]
     MAX_FILE_SIZE: int = 20 * 1024 * 1024  # 20MB
     MAX_FILES: int = 5
