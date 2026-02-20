@@ -16,11 +16,13 @@ app.add_middleware(
 )
 
 
+import asyncio
+
 # Startup event using lifespan
 @app.on_event("startup")
 async def startup_event():
-    print("Starting RAG service...")
-    rag_service.initialize()
+    print("Starting RAG service in background to avoid port binding timeout...")
+    asyncio.create_task(asyncio.to_thread(rag_service.initialize))
 
 
 # Include Routers
