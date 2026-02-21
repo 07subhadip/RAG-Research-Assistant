@@ -118,8 +118,8 @@ export default function Home() {
                 setSidebarRefreshTrigger((prev) => !prev);
             }
 
-            const apiBaseUrl =
-                process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+            const isProd = typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+            const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || (isProd ? "https://rag-research-assistant-abz0.onrender.com" : "http://127.0.0.1:8000");
             const response = await fetch(`${apiBaseUrl}/chat`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
