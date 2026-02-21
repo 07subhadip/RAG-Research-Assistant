@@ -14,7 +14,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 
 class Settings(BaseSettings):
-    HUGGINGFACEHUB_ACCESS_TOKEN: str
+    HUGGINGFACEHUB_ACCESS_TOKEN: str = ""
     ALLOWED_ORIGINS: list = [
         "http://localhost:3000",
         "http://localhost:8000",
